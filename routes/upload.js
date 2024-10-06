@@ -1,10 +1,10 @@
-const express = require("express");
-const multer = require("multer");
-const cloudinary = require("../config/cloudinary");
-const router = express.Router();
+import { Router } from "express";
+import multer, { memoryStorage } from "multer";
+import { uploader } from "../config/cloudinary";
+const router = Router();
 
 // Configure Multer storage
-const storage = multer.memoryStorage(); // Store image in memory temporarily
+const storage = memoryStorage(); // Store image in memory temporarily
 const upload = multer({ storage });
 
 // API route to handle image upload
@@ -13,7 +13,7 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     const file = req.file;
 
     // Upload to Cloudinary
-    const result = await cloudinary.uploader.upload_stream(
+    const result = await uploader.upload_stream(
       {
         resource_type: "image",
       },
@@ -33,4 +33,4 @@ router.post("/upload", upload.single("image"), async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
