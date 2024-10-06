@@ -1,8 +1,8 @@
-const admin = require("firebase-admin");
+import admin, { initializeApp, credential as _credential } from "firebase-admin";
 require("dotenv").config();
 
-admin.initializeApp({
-  credential: admin.credential.cert({
+initializeApp({
+  credential: _credential.cert({
     type: "service_account",
     project_id: process.env.FIREBASE_PROJECT_ID,
     private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
@@ -16,4 +16,4 @@ admin.initializeApp({
   }),
 });
 
-module.exports = admin;
+export default admin;
