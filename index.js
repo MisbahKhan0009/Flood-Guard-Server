@@ -25,3 +25,6 @@ app.use("/api/rescue-assignments", rescueAssignmentsRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+
+//http://localhost:3000/api/  == base route
