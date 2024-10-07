@@ -1,7 +1,13 @@
 // routes/sheltersRoutes.js
 
 import { Router } from "express";
-import { createShelter, getShelters, getShelterById, updateShelter, deleteShelter } from "../controllers/sheltersController.js"; // Adjust the path as necessary
+import {
+  createShelter,
+  getShelters,
+  getShelterById,
+  updateShelter,
+  deleteShelter,
+} from "../controllers/sheltersController.js";
 
 const router = Router();
 
