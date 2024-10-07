@@ -1,4 +1,4 @@
-import db from "../config/db.js"; // Adjust the path as necessary
+import db from "../config/db.js";
 
 // Create a new shelter (POST)
 export function createShelter(req, res) {
