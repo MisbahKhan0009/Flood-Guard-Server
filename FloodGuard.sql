@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 07, 2024 at 01:28 AM
+-- Generation Time: Oct 08, 2024 at 05:40 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -20,6 +20,33 @@ SET time_zone = "+00:00";
 --
 -- Database: `FloodGuard`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `deadBodies`
+--
+
+CREATE TABLE `deadBodies` (
+  `body_id` int(11) NOT NULL,
+  `image_url` text NOT NULL,
+  `found_location` text NOT NULL,
+  `found_time` datetime NOT NULL,
+  `submitted_hospital_id` int(11) NOT NULL,
+  `submission_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `identified` enum('Yes','No') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `deadBodies`
+--
+
+INSERT INTO `deadBodies` (`body_id`, `image_url`, `found_location`, `found_time`, `submitted_hospital_id`, `submission_time`, `identified`) VALUES
+(6, 'https://api.multiavatar.com/Binx%20Bond.png', 'Dhanmondi, Dhaka', '2024-10-01 08:00:00', 1, '2024-10-08 02:49:10', 'No'),
+(7, 'https://api.multiavatar.com/Binx%20Bond.png', 'Motijheel, Dhaka', '2024-09-30 14:30:00', 2, '2024-10-08 02:49:10', 'Yes'),
+(8, 'https://api.multiavatar.com/Binx%20Bond.png', 'Chittagong Port Area, Chittagong', '2024-09-29 12:45:00', 2, '2024-10-08 02:49:10', 'No'),
+(9, 'https://api.multiavatar.com/Binx%20Bond.png', 'Kazirbazar, Sylhet', '2024-09-28 16:10:00', 3, '2024-10-08 02:49:10', 'Yes'),
+(10, 'https://api.multiavatar.com/Binx%20Bond.png', 'Sonadanga, Khulna', '2024-09-27 09:20:00', 5, '2024-10-08 02:49:10', 'No');
 
 -- --------------------------------------------------------
 
@@ -51,7 +78,8 @@ INSERT INTO `donations` (`donation_id`, `donor_name`, `donation_type`, `quantity
 (10, 'Mita Sultana', 'Food', 75, '2023-07-24 00:00:00', 'Instant noodles and snacks'),
 (11, 'John Doe', 'Food', 10, '2024-10-07 02:48:57', 'Non-perishable items only'),
 (12, 'John Doe', 'Food', 10, '2024-10-07 03:29:17', 'Non-perishable items only'),
-(13, 'Jane Doe', 'Money', 12000, '2024-10-07 03:38:33', 'Donating to help shelter operations');
+(13, 'Jane Doe', 'Money', 12000, '2024-10-07 03:38:33', 'Donating to help shelter operations'),
+(15, 'John Doe', 'Food', 10, '2024-10-08 01:40:43', 'Non-perishable items only');
 
 -- --------------------------------------------------------
 
@@ -108,11 +136,36 @@ CREATE TABLE `floods` (
 
 INSERT INTO `floods` (`flood_id`, `start_date`, `end_date`, `severity`, `affected_area`, `water_level`, `danger_level`, `reported_at`, `notes`) VALUES
 (1, '2023-01-01 00:00:00', '2023-01-05 23:59:59', 'High', 'Dhanmondi, Dhaka', 5.00, 'High', '2024-10-05 04:30:43', NULL),
-(2, '2023-01-02 00:00:00', '2023-01-06 23:59:59', 'Medium', 'Gulshan, Dhaka', 4.00, 'Medium', '2024-10-05 04:30:43', NULL),
 (3, '2023-01-03 00:00:00', '2023-01-07 23:59:59', 'Low', 'Chittagong', 3.00, 'Low', '2024-10-05 04:30:43', NULL),
 (4, '2023-01-04 00:00:00', '2023-01-08 23:59:59', 'High', 'Rajshahi', 5.50, 'High', '2024-10-05 04:30:43', NULL),
 (5, '2023-01-05 00:00:00', '2023-01-09 23:59:59', 'Medium', 'Barisal', 4.50, 'Medium', '2024-10-05 04:30:43', NULL),
-(6, '2023-01-06 00:00:00', '2023-01-10 23:59:59', 'Severe', 'Sylhet', 6.00, 'High', '2024-10-05 04:30:43', NULL);
+(6, '2023-01-06 00:00:00', '2023-01-10 23:59:59', 'Severe', 'Sylhet', 6.00, 'High', '2024-10-05 04:30:43', NULL),
+(7, '2024-10-08 10:00:00', '2024-10-09 12:00:00', 'High', 'Dhaka', 6.50, 'High', '2024-10-08 03:23:00', 'Severe flooding reported in Dhaka.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hospital`
+--
+
+CREATE TABLE `hospital` (
+  `hospital_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `location` text NOT NULL,
+  `bed` int(11) NOT NULL,
+  `bed_available` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `hospital`
+--
+
+INSERT INTO `hospital` (`hospital_id`, `name`, `location`, `bed`, `bed_available`) VALUES
+(1, 'Dhaka Medical College Hospital', 'Dhanmondi, Dhaka', 1000, 150),
+(2, 'Chittagong Medical College Hospital', 'Chawkbazar, Chittagong', 800, 120),
+(3, 'Sylhet MAG Osmani Medical College', 'Kazirbazar, Sylhet', 500, 200),
+(4, 'Rajshahi Medical College Hospital', 'Laxmipur, Rajshahi', 400, 100),
+(5, 'Khulna Medical College Hospital', 'Sonadanga, Khulna', 300, 80);
 
 -- --------------------------------------------------------
 
@@ -194,7 +247,6 @@ CREATE TABLE `rescueassignments` (
 --
 
 INSERT INTO `rescueassignments` (`assignment_id`, `rescuer_id`, `victim_id`, `rescue_time`, `status`) VALUES
-(1, 1, 1, '2022-06-05 14:00:00', 'Completed'),
 (2, 2, 2, '2022-06-06 10:00:00', 'In Progress'),
 (3, 3, 3, '2020-07-20 16:30:00', 'Pending'),
 (4, 4, 4, '2021-08-02 12:15:00', 'Completed'),
@@ -203,7 +255,8 @@ INSERT INTO `rescueassignments` (`assignment_id`, `rescuer_id`, `victim_id`, `re
 (7, 7, 7, '2019-09-03 15:30:00', 'Pending'),
 (8, 8, 8, '2021-08-06 10:00:00', 'Completed'),
 (9, 9, 9, '2019-10-05 18:00:00', 'Pending'),
-(10, 10, 10, '2022-06-07 09:30:00', 'In Progress');
+(10, 10, 10, '2022-06-07 09:30:00', 'In Progress'),
+(11, 1, 1, '2024-10-07 12:00:00', 'Pending');
 
 -- --------------------------------------------------------
 
@@ -400,6 +453,13 @@ INSERT INTO `weatherforecast` (`forecast_id`, `date`, `temperature`, `humidity`,
 --
 
 --
+-- Indexes for table `deadBodies`
+--
+ALTER TABLE `deadBodies`
+  ADD PRIMARY KEY (`body_id`),
+  ADD KEY `submitted_hospital_id` (`submitted_hospital_id`);
+
+--
 -- Indexes for table `donations`
 --
 ALTER TABLE `donations`
@@ -417,6 +477,12 @@ ALTER TABLE `emergencyalerts`
 --
 ALTER TABLE `floods`
   ADD PRIMARY KEY (`flood_id`);
+
+--
+-- Indexes for table `hospital`
+--
+ALTER TABLE `hospital`
+  ADD PRIMARY KEY (`hospital_id`);
 
 --
 -- Indexes for table `hydrolevelmap`
@@ -479,22 +545,34 @@ ALTER TABLE `weatherforecast`
 --
 
 --
+-- AUTO_INCREMENT for table `deadBodies`
+--
+ALTER TABLE `deadBodies`
+  MODIFY `body_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `donations`
 --
 ALTER TABLE `donations`
-  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `donation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `emergencyalerts`
 --
 ALTER TABLE `emergencyalerts`
-  MODIFY `alert_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `alert_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `floods`
 --
 ALTER TABLE `floods`
-  MODIFY `flood_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `flood_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `hospital`
+--
+ALTER TABLE `hospital`
+  MODIFY `hospital_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `hydrolevelmap`
@@ -512,13 +590,13 @@ ALTER TABLE `mobiletowers`
 -- AUTO_INCREMENT for table `rescueassignments`
 --
 ALTER TABLE `rescueassignments`
-  MODIFY `assignment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `assignment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `rescuer`
 --
 ALTER TABLE `rescuer`
-  MODIFY `rescuer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `rescuer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `shelters`
@@ -530,7 +608,7 @@ ALTER TABLE `shelters`
 -- AUTO_INCREMENT for table `victim`
 --
 ALTER TABLE `victim`
-  MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `waterlevels`
@@ -547,6 +625,12 @@ ALTER TABLE `weatherforecast`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `deadBodies`
+--
+ALTER TABLE `deadBodies`
+  ADD CONSTRAINT `deadBodies_ibfk_1` FOREIGN KEY (`submitted_hospital_id`) REFERENCES `hospital` (`hospital_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `emergencyalerts`
