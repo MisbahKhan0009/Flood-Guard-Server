@@ -2,7 +2,7 @@ import db from "../config/db.js";
 
 // Create a new rescue assignment (POST)
 export function createRescueAssignment(req, res) {
-  const assignmentData = req.body; // Take all data from req.body
+  const assignmentData = req.body;
   const query = `INSERT INTO rescueassignments SET ?`;
 
   db.query(query, assignmentData, (error, results) => {
@@ -55,7 +55,7 @@ export function getRescueAssignmentById(req, res) {
 
 // Update a rescue assignment by ID (PATCH)
 export function updateRescueAssignment(req, res) {
-  const assignmentData = req.body; // Take all data from req.body
+  const assignmentData = req.body;
   const { id } = req.params;
   const query = `UPDATE rescueassignments SET ? WHERE assignment_id = ?`;
 

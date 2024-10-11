@@ -2,7 +2,7 @@ import db from "../config/db.js";
 
 // Create a new hospital (POST)
 export function createHospital(req, res) {
-  const hospitalData = req.body; // Take all data from req.body
+  const hospitalData = req.body;
   const query = `INSERT INTO hospital SET ?`;
 
   db.query(query, hospitalData, (error, results) => {

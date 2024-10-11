@@ -5,7 +5,7 @@ import {
   getDeadBodyById,
   updateDeadBody,
   deleteDeadBody,
-} from "../controllers/deadBodiesController.js"; // Adjust the path as necessary
+} from "../controllers/deadBodiesController.js";
 
 const router = Router();
 

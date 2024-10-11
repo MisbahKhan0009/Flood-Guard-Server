@@ -1,8 +1,8 @@
-import db from "../config/db.js"; // Adjust the path as necessary
+import db from "../config/db.js";
 
 // Create a new dead body record (POST)
 export function createDeadBody(req, res) {
-  const deadBodyData = req.body; // Take all data from req.body
+  const deadBodyData = req.body;
   const query = `INSERT INTO deadBodies SET ?`;
 
   db.query(query, deadBodyData, (error, results) => {
@@ -55,7 +55,7 @@ export function getDeadBodyById(req, res) {
 
 // Update a dead body record by ID (PATCH)
 export function updateDeadBody(req, res) {
-  const deadBodyData = req.body; // Take all data from req.body
+  const deadBodyData = req.body;
   const { id } = req.params;
   const query = `UPDATE deadBodies SET ? WHERE body_id = ?`;
 

@@ -2,7 +2,7 @@ import db from "../config/db.js";
 
 // Create a new water level record (POST)
 export function createWaterLevel(req, res) {
-  const waterLevelData = req.body; // Take all data from req.body
+  const waterLevelData = req.body;
   const query = `INSERT INTO waterlevels SET ?`;
 
   db.query(query, waterLevelData, (error, results) => {

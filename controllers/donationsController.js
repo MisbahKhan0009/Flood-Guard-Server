@@ -2,7 +2,7 @@ import db from "../config/db.js";
 
 // Create a new donation (POST)
 export function createDonation(req, res) {
-  const donationData = req.body; // Take all data from req.body
+  const donationData = req.body;
   const query = `INSERT INTO donations SET ?`;
 
   db.query(query, donationData, (error, results) => {
@@ -52,7 +52,7 @@ export function getDonationById(req, res) {
 
 // Update a donation by ID (PUT)
 export function updateDonation(req, res) {
-  const donationData = req.body; // Take all data from req.body
+  const donationData = req.body;
   const { id } = req.params;
   const query = `UPDATE donations SET ? WHERE donation_id = ?`;
 

@@ -2,7 +2,7 @@ import db from "../config/db.js";
 
 // Create a new rescuer (POST)
 export function createRescuer(req, res) {
-  const rescuerData = req.body; // Take all data from req.body
+  const rescuerData = req.body;
   const query = `INSERT INTO rescuer SET ?`;
 
   db.query(query, rescuerData, (error, results) => {
@@ -52,7 +52,7 @@ export function getRescuerById(req, res) {
 
 // Update a rescuer by ID (PATCH)
 export function updateRescuer(req, res) {
-  const rescuerData = req.body; // Take all data from req.body
+  const rescuerData = req.body;
   const { id } = req.params;
   const query = `UPDATE rescuer SET ? WHERE rescuer_id = ?`;
 

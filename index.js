@@ -1,5 +1,6 @@
 import express, { application } from "express";
 import bodyParser from "body-parser";
+import cors from "cors"; // Import cors package
 import victimRoutes from "./routes/victimRoutes.js";
 import donationsRoutes from "./routes/donationsRoutes.js";
 import sheltersRoutes from "./routes/sheltersRoutes.js";
@@ -20,6 +21,17 @@ const PORT = 3000;
 const { json } = bodyParser;
 app.use(json());
 
+// Use CORS middleware
+const allowedOrigins = ["http://localhost:5173"]; // Specify your frontend URL
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
+    credentials: true, // Allow credentials to be sent
+  })
+);
+
 // Routes
 app.use("/api/victims", victimRoutes);
 app.use("/api/donations", donationsRoutes);
@@ -38,4 +50,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-//http://localhost:3000/api/  == base route
+// http://localhost:3000/api/  == base route
