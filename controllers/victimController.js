@@ -1,17 +1,65 @@
 import db from "../config/db.js";
 
-// Get all victims (GET)
+// Get all victims with pagination, search, and sorting
 export function getAllVictims(req, res) {
-  const sql = "SELECT * FROM victim";
-  db.query(sql, (err, results) => {
-    if (err) {
-      return res.status(500).json({ message: "Database error", error: err });
+  const {
+    limit = 10,
+    offset = 0,
+    search = "",
+    sortField = "id",
+    sortOrder = "asc",
+  } = req.query;
+
+  // Ensure that only valid sort orders are used
+  const validSortOrder = ["asc", "desc"].includes(sortOrder.toLowerCase())
+    ? sortOrder
+    : "asc";
+  const validSortFields = [
+    "victim_id",
+    "name",
+    "age",
+    "gender",
+    "location",
+    "contact",
+  ]; // Only allow sorting by these fields
+
+  // Make sure the sortField is valid to prevent SQL injection
+  const field = validSortFields.includes(sortField) ? sortField : "id";
+
+  const searchQuery = `%${search}%`; // Prepare the search term
+  const sql = `
+    SELECT * FROM victim 
+    WHERE name LIKE ? 
+    ORDER BY ${field} ${validSortOrder} 
+    LIMIT ? OFFSET ?
+  `;
+
+  // Get the list of victims with pagination, search, and sorting
+  db.query(
+    sql,
+    [searchQuery, parseInt(limit), parseInt(offset)],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Database error", error: err });
+      }
+
+      // Count the total number of matching records for pagination
+      const countSql = `SELECT COUNT(*) AS totalCount FROM victim WHERE name LIKE ?`;
+      db.query(countSql, [searchQuery], (err, countResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "Database error", error: err });
+        }
+
+        // Send back both the victims data and the total count
+        res.status(200).json({
+          victims: results,
+          totalCount: countResult[0].totalCount,
+        });
+      });
     }
-    if (results.length === 0) {
-      return res.status(404).json({ message: "No victims found" });
-    }
-    res.status(200).json(results);
-  });
+  );
 }
 
 // Get a single victim by ID (GET)
