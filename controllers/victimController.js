@@ -20,44 +20,72 @@ export function getAllVictims(req, res) {
     "age",
     "gender",
     "location",
-    "contact",
+    "danger_level",
+    "rescue_status",
+    "health_status",
   ]; // Only allow sorting by these fields
 
   // Make sure the sortField is valid to prevent SQL injection
-  const field = validSortFields.includes(sortField) ? sortField : "id";
+  const field = validSortFields.includes(sortField)
+    ? sortField
+    : "danger_level";
 
   const searchQuery = `%${search}%`; // Prepare the search term
+
+  // SQL query to fetch victims based on the search term and sort order
   const sql = `
-    SELECT * FROM victim 
-    WHERE name LIKE ? 
-    ORDER BY ${field} ${validSortOrder} 
-    LIMIT ? OFFSET ?
+      SELECT * FROM victim 
+      WHERE name LIKE ? 
+      OR address_area LIKE ? 
+      OR danger_level LIKE ? 
+      OR rescue_status LIKE ? 
+      OR health_status LIKE ? 
+      ORDER BY ${field} ${validSortOrder} 
+      LIMIT ? OFFSET ?
   `;
 
   // Get the list of victims with pagination, search, and sorting
   db.query(
     sql,
-    [searchQuery, parseInt(limit), parseInt(offset)],
+    [
+      searchQuery,
+      searchQuery,
+      searchQuery,
+      searchQuery,
+      searchQuery,
+      parseInt(limit),
+      parseInt(offset),
+    ],
     (err, results) => {
       if (err) {
         return res.status(500).json({ message: "Database error", error: err });
       }
 
       // Count the total number of matching records for pagination
-      const countSql = `SELECT COUNT(*) AS totalCount FROM victim WHERE name LIKE ?`;
-      db.query(countSql, [searchQuery], (err, countResult) => {
-        if (err) {
-          return res
-            .status(500)
-            .json({ message: "Database error", error: err });
-        }
+      const countSql = `SELECT COUNT(*) AS totalCount FROM victim 
+        WHERE name LIKE ? 
+        OR address_area LIKE ? 
+        OR danger_level LIKE ? 
+        OR rescue_status LIKE ? 
+        OR health_status LIKE ?`;
 
-        // Send back both the victims data and the total count
-        res.status(200).json({
-          victims: results,
-          totalCount: countResult[0].totalCount,
-        });
-      });
+      db.query(
+        countSql,
+        [searchQuery, searchQuery, searchQuery, searchQuery, searchQuery],
+        (err, countResult) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ message: "Database error", error: err });
+          }
+
+          // Send back both the victims data and the total count
+          res.status(200).json({
+            victims: results,
+            totalCount: countResult[0].totalCount,
+          });
+        }
+      );
     }
   );
 }
