@@ -61,5 +61,5 @@ Team **Machine Minds**
 
 - [Misbah Khan](https://github.com/MisbahKhan0009)
 - [Sabbir Hossain](https://github.com/Sabbir-Hossain22)
-- Aritra Islam Saswato
+- [Aritra Islam Saswato](https://github.com/AritraIslamSaswato)
 
