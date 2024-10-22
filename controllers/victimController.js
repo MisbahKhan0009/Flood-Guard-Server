@@ -90,10 +90,10 @@ export function getAllVictims(req, res) {
   );
 }
 
-// Get a single victim by ID (GET)
-export function getVictimById(req, res) {
-  const sql = "SELECT * FROM victim WHERE NID = ?";
-  db.query(sql, [req.params.id], (err, result) => {
+// Get a single victim by email (GET)
+export function getVictimByEmail(req, res) {
+  const sql = "SELECT * FROM victim WHERE email = ?";
+  db.query(sql, [req.params.email], (err, result) => {
     if (err) {
       return res.status(500).json({ message: "Database error", error: err });
     }
@@ -103,6 +103,7 @@ export function getVictimById(req, res) {
     res.status(200).json(result[0]);
   });
 }
+
 
 // Create victim (POST)
 export function createVictim(req, res) {

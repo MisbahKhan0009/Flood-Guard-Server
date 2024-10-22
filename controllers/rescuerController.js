@@ -32,12 +32,12 @@ export function getAllRescuers(req, res) {
   });
 }
 
-// Read a single rescuer by ID (GET)
-export function getRescuerById(req, res) {
-  const { id } = req.params;
-  const query = `SELECT * FROM rescuer WHERE rescuer_id = ?`;
+// Read a single rescuer by email (GET)
+export function getRescuerByEmail(req, res) {
+  const { email } = req.params;
+  const query = `SELECT * FROM rescuer WHERE email = ?`;
 
-  db.query(query, [id], (error, results) => {
+  db.query(query, [email], (error, results) => {
     if (error) {
       return res
         .status(500)
@@ -49,6 +49,7 @@ export function getRescuerById(req, res) {
     return res.status(200).json(results[0]);
   });
 }
+
 
 // Update a rescuer by ID (PATCH)
 export function updateRescuer(req, res) {
