@@ -3,7 +3,7 @@ const router = Router();
 import {
   createVictim,
   getAllVictims,
-  getVictimById,
+  getVictimByEmail,
   updateVictim,
   deleteVictim,
 } from "../controllers/victimController.js";
@@ -11,7 +11,7 @@ import {
 // Define routes for the victim resource
 router.post("/", createVictim); // Create victim
 router.get("/", getAllVictims); // Get all victims
-router.get("/:id", getVictimById); // Get a single victim by ID
+router.get("/:email", getVictimByEmail); // Get a single victim by ID
 router.patch("/:id", updateVictim); // Update victim by ID
 router.delete("/:id", deleteVictim); // Delete victim by ID
 
