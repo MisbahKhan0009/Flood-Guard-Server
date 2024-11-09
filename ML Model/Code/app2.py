@@ -37,15 +37,30 @@ def flood_risk_prediction():
         if not station_name or not month:
             return jsonify({"error": "Both 'Station_Names' and 'Month' must be provided"}), 400
 
-        # Prediction from Server 1
+        # Prediction from the model
         result = model.predict(station_name, month)
 
-        # Send output from Server 1 to Server 2
-        server2_url = 'http://localhost:5001/predict'
-        response = requests.post(server2_url, json=result)
+        # Complete result with default values for optional features
+        result_complete = {
+            'Max_Temp': result.get('Max_Temp'),
+            'Min_Temp': result.get('Min_Temp'),
+            'Rainfall': result.get('Rainfall'),
+            'Relative_Humidity': result.get('Relative_Humidity'),
+            'Wind_Speed': result.get('Wind_Speed'),
+            'Cloud_Coverage': result.get('Cloud_Coverage'),
+            'Bright_Sunshine': result.get('Bright_Sunshine'),
+            # Optional additional features
+            # 'Temp_Diff': result.get('Temp_Diff'),
+            # Optional additional features
+            # 'Rainfall_Squared': result.get('Rainfall_Squared')
+        }
+
+        # Send output to the secondary server for flood risk prediction
+        server2_url = 'http://localhost:5050/predict'
+        response = requests.post(server2_url, json=result_complete)
 
         if response.status_code == 200:
-            return jsonify(response.json())
+            return jsonify({'result': response.json()}, result)
         else:
             return jsonify({"error": "Failed to get response from Server 2"}), response.status_code
 
@@ -54,4 +69,4 @@ def flood_risk_prediction():
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5051, debug=True)
