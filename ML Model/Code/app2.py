@@ -1,61 +1,57 @@
 from flask import Flask, jsonify, request
 import pandas as pd
 import joblib
+import requests
 
-# Initialize Flask app
 app = Flask(__name__)
 
-# Define a Model class to handle model loading and prediction
+
 class FloodRiskModel:
     def __init__(self, model_path):
-        # Load the trained model pipeline
         self.model = joblib.load(model_path)
-        # Define input and output features for reference
         self.input_features = ['Station_Names', 'Month']
-        self.output_features = ['Max_Temp', 'Min_Temp', 'Rainfall', 'Relative_Humidity', 
+        self.output_features = ['Max_Temp', 'Min_Temp', 'Rainfall', 'Relative_Humidity',
                                 'Wind_Speed', 'Cloud_Coverage', 'Bright_Sunshine']
 
     def predict(self, station_name, month):
-        # Convert inputs to string or expected format
         station_name = str(station_name)
         month = str(month)
-
-        # Create a DataFrame for the input (ensure correct types)
-        input_df = pd.DataFrame([[station_name, month]], columns=self.input_features)
-
-        # Make the prediction
+        input_df = pd.DataFrame([[station_name, month]],
+                                columns=self.input_features)
         prediction = self.model.predict(input_df)
-
-        # Format predictions into a dictionary
-        output = {feature: prediction[0][i] for i, feature in enumerate(self.output_features)}
-
+        output = {feature: prediction[0][i]
+                  for i, feature in enumerate(self.output_features)}
         return output
 
-# Initialize the model class with the path to the saved model
+
 model = FloodRiskModel('ML Model/Code/rf_model_with_pipeline.sav')
+
 
 @app.route('/predict', methods=['POST'])
 def flood_risk_prediction():
     try:
-        # Get the input data from the JSON body of the request
         input_data = request.get_json()
-
-        # Extract Station_Names and Month from the input JSON
         station_name = input_data.get('Station_Names')
         month = input_data.get('Month')
 
-        # Validate inputs
         if not station_name or not month:
             return jsonify({"error": "Both 'Station_Names' and 'Month' must be provided"}), 400
 
-        # Make the prediction using the model
+        # Prediction from Server 1
         result = model.predict(station_name, month)
 
-        # Return the full prediction output as JSON
-        return jsonify(result)
+        # Send output from Server 1 to Server 2
+        server2_url = 'http://localhost:5001/predict'
+        response = requests.post(server2_url, json=result)
+
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to get response from Server 2"}), response.status_code
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5000, debug=True)
