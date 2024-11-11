@@ -104,7 +104,6 @@ export function getVictimByEmail(req, res) {
   });
 }
 
-
 // Create victim (POST)
 export function createVictim(req, res) {
   const victim = req.body;
@@ -117,29 +116,32 @@ export function createVictim(req, res) {
     }
     res
       .status(201)
-      .json({ message: "Victim profile created", victimId: result.insertId });
+      .json({ message: "Victim profile created", user_id: result.insertId });
   });
 }
 
-// Update victim by ID (PUT)
+// Update victim by ID (PATCH)
 export function updateVictim(req, res) {
-  const sql = "UPDATE victim SET ? WHERE NID = ?";
-  db.query(sql, [req.body, req.params.id], (err, result) => {
-    if (err) {
+  const victimData = req.body;
+  const { id } = req.params;
+  const query = "UPDATE victim SET ? WHERE victim_id = ?";
+
+  db.query(query, [victimData, id], (error, results) => {
+    if (error) {
       return res
         .status(500)
-        .json({ message: "Error updating victim", error: err });
+        .json({ message: "Error updating victim", error: error.message });
     }
-    if (result.affectedRows === 0) {
+    if (results.affectedRows === 0) {
       return res.status(404).json({ message: "Victim not found" });
     }
-    res.status(200).json({ message: "Victim profile updated" });
+    return res.status(200).json({ message: "Victim updated successfully" });
   });
 }
 
 // Delete victim by ID (DELETE)
 export function deleteVictim(req, res) {
-  const sql = "DELETE FROM victim WHERE NID = ?";
+  const sql = "DELETE FROM victim WHERE victim_id = ?";
   db.query(sql, [req.params.id], (err, result) => {
     if (err) {
       return res

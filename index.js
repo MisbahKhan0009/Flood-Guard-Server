@@ -21,16 +21,7 @@ const PORT = 3000;
 const { json } = bodyParser;
 app.use(json());
 
-// Use CORS middleware
-const allowedOrigins = ["http://localhost:5173"]; // Specify your frontend URL
-
-app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
-    credentials: true, // Allow credentials to be sent
-  })
-);
+app.use(cors());
 
 // Routes
 app.use("/api/victims", victimRoutes);

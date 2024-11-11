@@ -22,9 +22,9 @@ def flood_risk_prediction():
             input_data.get('Cloud_Coverage'),
             input_data.get('Bright_Sunshine'),
             # Optional additional features
-            # input_data.get('Temp_Diff'),
+            input_data.get('Temp_Diff'),
             # Optional additional features
-            # input_data.get('Rainfall_Squared')
+            input_data.get('Rainfall_Squared')
         ]
 
         # Model prediction

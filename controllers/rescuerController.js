@@ -13,7 +13,7 @@ export function createRescuer(req, res) {
     }
     return res.status(201).json({
       message: "Rescuer created successfully",
-      rescuer_id: results.insertId,
+      user_id: results.insertId,
     });
   });
 }
