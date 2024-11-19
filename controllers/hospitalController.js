@@ -18,18 +18,73 @@ export function createHospital(req, res) {
   });
 }
 
-// Get all hospitals (GET)
+// Get all hospitals with pagination, search, and sorting
 export function getAllHospitals(req, res) {
-  const query = `SELECT * FROM hospital`;
+  const {
+    limit = 10,
+    offset = 0,
+    search = "",
+    sortField = "hospital_id",
+    sortOrder = "asc",
+  } = req.query;
 
-  db.query(query, (error, results) => {
-    if (error) {
-      return res
-        .status(500)
-        .json({ message: "Error fetching hospitals", error: error.message });
+  // Ensure that only valid sort orders are used
+  const validSortOrder = ["asc", "desc"].includes(sortOrder.toLowerCase())
+    ? sortOrder
+    : "asc";
+
+  // Define valid fields that can be sorted to prevent SQL injection
+  const validSortFields = [
+    "hospital_id",
+    "name",
+    "location",
+    "bed",
+    "bed_available",
+  ];
+
+  // Make sure the sortField is valid to prevent SQL injection
+  const field = validSortFields.includes(sortField) ? sortField : "hospital_id";
+
+  const searchQuery = `%${search}%`; // Prepare the search term for filtering
+
+  // SQL query to fetch hospitals based on the search term and sort order
+  const sql = `
+    SELECT * FROM hospital 
+    WHERE name LIKE ? 
+    OR location LIKE ? 
+    ORDER BY ${field} ${validSortOrder} 
+    LIMIT ? OFFSET ?
+  `;
+
+  // Get the list of hospitals with pagination, search, and sorting
+  db.query(
+    sql,
+    [searchQuery, searchQuery, parseInt(limit), parseInt(offset)],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Database error", error: err });
+      }
+
+      // Count the total number of matching records for pagination
+      const countSql = `SELECT COUNT(*) AS totalCount FROM hospital 
+        WHERE name LIKE ? 
+        OR location LIKE ?`;
+
+      db.query(countSql, [searchQuery, searchQuery], (err, countResult) => {
+        if (err) {
+          return res
+            .status(500)
+            .json({ message: "Database error", error: err });
+        }
+
+        // Send back both the hospitals data and the total count
+        res.status(200).json({
+          hospitals: results,
+          totalCount: countResult[0].totalCount,
+        });
+      });
     }
-    return res.status(200).json(results);
-  });
+  );
 }
 
 // Get a hospital by ID (GET)

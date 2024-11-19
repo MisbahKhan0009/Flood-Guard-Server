@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 import pickle
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 model = pickle.load(open('ML Model/Code/rf_model_forFG.sav', 'rb'))
 
@@ -33,14 +35,14 @@ def flood_risk_prediction():
 
         # Determine the risk category based on probabilities
         for prob in y_prob_rf:
-            if prob > 0.75:
+            if prob > 0.90:
                 risk_category = 'High Risk'
-            elif 0.25 < prob <= 0.75:
+            elif 0.80 < prob <= 0.90:
                 risk_category = 'Medium Risk'
             else:
                 risk_category = 'Low Risk'
 
-        return jsonify({'risk': risk_category, 'risk_percent': max(y_prob_rf)})
+        return jsonify({'risk': risk_category})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
