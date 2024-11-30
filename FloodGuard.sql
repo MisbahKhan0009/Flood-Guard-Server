@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 18, 2024 at 10:42 PM
+-- Generation Time: Nov 30, 2024 at 08:02 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -47,7 +47,9 @@ INSERT INTO `deadBodies` (`body_id`, `image_url`, `found_location`, `found_time`
 (8, 'https://api.multiavatar.com/Binx%20Bond.png', 'Chittagong Port Area, Chittagong', '2024-09-29 12:45:00', 2, '2024-10-08 02:49:10', 'No'),
 (9, 'https://api.multiavatar.com/Binx%20Bond.png', 'Kazirbazar, Sylhet', '2024-09-28 16:10:00', 3, '2024-10-08 02:49:10', 'Yes'),
 (10, 'https://api.multiavatar.com/Binx%20Bond.png', 'Sonadanga, Khulna', '2024-09-27 09:20:00', 5, '2024-10-08 02:49:10', 'No'),
-(11, 'http://example.com/image.jpg', 'Area A, Upazila B, District C', '2024-09-25 12:00:00', 1, '2024-10-08 11:36:23', 'No');
+(11, 'https://api.multiavatar.com/Binx%20Bond.png', 'Area A, Upazila B, District C', '2024-09-25 12:00:00', 1, '2024-10-08 11:36:23', 'No'),
+(12, 'https://api.multiavatar.com/Binx%20Bond.png', 'dhaka', '2024-11-16 16:21:00', 2, '2024-11-19 10:21:56', 'No'),
+(13, 'https://api.multiavatar.com/Binx%20Bond.png', 'kuril', '2024-11-19 17:27:00', 2, '2024-11-19 11:27:35', 'Yes');
 
 -- --------------------------------------------------------
 
@@ -93,8 +95,8 @@ CREATE TABLE `emergencyalerts` (
   `alert_id` int(11) NOT NULL,
   `victim_id` int(11) NOT NULL,
   `alert_time` datetime DEFAULT current_timestamp(),
-  `location_latitude` decimal(10,8) NOT NULL,
-  `location_longitude` decimal(11,8) NOT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
   `message` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -102,7 +104,7 @@ CREATE TABLE `emergencyalerts` (
 -- Dumping data for table `emergencyalerts`
 --
 
-INSERT INTO `emergencyalerts` (`alert_id`, `victim_id`, `alert_time`, `location_latitude`, `location_longitude`, `message`) VALUES
+INSERT INTO `emergencyalerts` (`alert_id`, `victim_id`, `alert_time`, `latitude`, `longitude`, `message`) VALUES
 (1, 1, '2022-06-05 12:00:00', 23.81030000, 90.41250000, 'Flood alert in Dhanmondi area. Immediate help required.'),
 (2, 2, '2022-06-06 09:00:00', 23.81030000, 90.41250000, 'Severe flooding reported in Shahbag.'),
 (3, 3, '2020-07-20 15:30:00', 23.81030000, 90.41250000, 'Help needed for Akram in Gulshan.'),
@@ -140,7 +142,6 @@ INSERT INTO `floods` (`flood_id`, `start_date`, `end_date`, `severity`, `affecte
 (1, '2023-01-01 00:00:00', '2023-01-05 23:59:59', 'Low', 'Dhanmondi, Dhaka', 5.00, 'High', '2024-10-05 04:30:43', NULL),
 (3, '2023-01-03 00:00:00', '2023-01-07 23:59:59', 'Low', 'Chittagong', 3.00, 'Low', '2024-10-05 04:30:43', NULL),
 (4, '2023-01-04 00:00:00', '2023-01-08 23:59:59', 'High', 'Rajshahi', 5.50, 'High', '2024-10-05 04:30:43', NULL),
-(5, '2023-01-05 00:00:00', '2023-01-09 23:59:59', 'Medium', 'Barisal', 4.50, 'Medium', '2024-10-05 04:30:43', NULL),
 (6, '2023-01-06 00:00:00', '2023-01-10 23:59:59', 'Severe', 'Sylhet', 6.00, 'High', '2024-10-05 04:30:43', NULL),
 (7, '2024-10-08 10:00:00', '2024-10-09 12:00:00', 'High', 'Dhaka', 6.50, 'High', '2024-10-08 03:23:00', 'Severe flooding reported in Dhaka.'),
 (8, '2024-10-08 10:00:00', '2024-10-09 12:00:00', 'High', 'Dhaka', 6.50, 'High', '2024-10-08 06:42:13', 'Severe flooding reported in Dhaka.');
@@ -239,9 +240,9 @@ INSERT INTO `mobiletowers` (`tower_id`, `location`, `operator`, `active_status`,
 
 CREATE TABLE `rescueassignments` (
   `assignment_id` int(11) NOT NULL,
-  `rescuer_id` int(11) NOT NULL,
+  `rescuer_id` int(11) DEFAULT NULL,
   `victim_id` int(11) NOT NULL,
-  `rescue_time` datetime NOT NULL,
+  `rescue_time` datetime DEFAULT NULL,
   `status` enum('Pending','In Progress','Completed') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -251,15 +252,18 @@ CREATE TABLE `rescueassignments` (
 
 INSERT INTO `rescueassignments` (`assignment_id`, `rescuer_id`, `victim_id`, `rescue_time`, `status`) VALUES
 (2, 2, 2, '2022-06-06 10:00:00', 'In Progress'),
-(3, 3, 3, '2020-07-20 16:30:00', 'Pending'),
-(4, 4, 4, '2021-08-02 12:15:00', 'Completed'),
-(5, 5, 5, '2020-07-16 11:45:00', 'In Progress'),
-(6, 6, 6, '2021-08-05 14:00:00', 'Completed'),
-(7, 7, 7, '2019-09-03 15:30:00', 'Pending'),
-(8, 8, 8, '2021-08-06 10:00:00', 'Completed'),
-(9, 9, 9, '2019-10-05 18:00:00', 'Pending'),
-(10, 10, 10, '2022-06-07 09:30:00', 'In Progress'),
-(11, 1, 1, '2024-10-07 12:00:00', 'Pending');
+(3, 41, 3, '2024-11-13 02:46:49', 'In Progress'),
+(4, 4, 4, '2024-11-19 17:31:03', 'Completed'),
+(5, 41, 5, '2024-11-13 02:46:48', 'In Progress'),
+(6, 6, 6, '2021-08-05 14:00:00', 'In Progress'),
+(7, 41, 7, '2024-11-19 00:39:08', 'Completed'),
+(8, 8, 8, '2021-08-06 10:00:00', 'In Progress'),
+(9, 41, 9, '2024-11-13 02:46:49', 'Completed'),
+(10, 41, 10, '2024-11-13 02:46:46', 'Pending'),
+(11, 41, 1, '2024-11-13 02:46:41', 'Completed'),
+(16, 41, 86, '2024-11-13 02:46:43', 'Pending'),
+(17, NULL, 87, '2024-11-13 10:42:00', 'Completed'),
+(18, NULL, 87, NULL, 'Pending');
 
 -- --------------------------------------------------------
 
@@ -304,15 +308,20 @@ INSERT INTO `rescuer` (`rescuer_id`, `NID`, `name`, `address_area`, `address_upa
 (8, '7654321098765', 'Fatema Nasrin', 'Barisal', 'Barisal Sadar', 'Barisal', 22.70100000, 90.35350000, '01934567879', 'fatema@example.com', 'Barisal Community', 'Female', 27, 'Available', 'Logistics', 'Food Supplies', 8, NULL, NULL),
 (9, '8765432109876', 'Sabbir Rahman', 'Sylhet', 'Sylhet Sadar', 'Sylhet', 24.89440000, 91.88320000, '01945678901', 'sabbir@example.com', 'Sylhet Volunteers', 'Male', 33, 'Available', 'Swimming', 'Boat', 9, NULL, NULL),
 (10, '9876543210987', 'Nazma Akter', 'Khulna', 'Khulna Sadar', 'Khulna', 22.84560000, 89.54030000, '01956789023', 'nazma@example.com', 'Khulna Aid', 'Female', 31, 'Available', 'Medical Assistance', 'Medicines', 14, NULL, NULL),
-(13, NULL, 'John Doe', NULL, NULL, NULL, NULL, NULL, NULL, 'a@ijhnjjjk.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(14, NULL, 'Misbah khan', NULL, NULL, NULL, NULL, NULL, NULL, 'asc@nawiok.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(15, NULL, 'Misbah khan', NULL, NULL, NULL, NULL, NULL, NULL, 'asc@naawiok.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(16, NULL, 'Misbah khan', NULL, NULL, NULL, NULL, NULL, NULL, 'asc@naaswioks.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(17, NULL, 'Misbah khan', NULL, NULL, NULL, NULL, NULL, NULL, 'asc@nsaaswioks.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(18, NULL, 'oj ihj', NULL, NULL, NULL, NULL, NULL, NULL, 'nooooonn@dff.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(19, NULL, 'Misbah khan', NULL, NULL, NULL, NULL, NULL, NULL, 'abcd@abcd.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(20, NULL, 'aj aen', NULL, NULL, NULL, NULL, NULL, NULL, 'mk@hn.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(21, NULL, 'misbah khan', NULL, NULL, NULL, NULL, NULL, NULL, 'mkhanmisbah007@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(31, NULL, 'jh jh', 'unnamed road', 'Kuril', 'Dhaka', 23.82147300, 90.42195360, NULL, 'jh@jh.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(32, NULL, 'jhr jh', 'unnamed road', 'Kuril', 'Dhaka', 23.82147300, 90.42195360, NULL, 'jh@jhr.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(33, NULL, 'jhre jhe', 'unnamed road', 'Kuril', 'Dhaka', 23.82147300, 90.42195360, NULL, 'ejh@jhr.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(34, NULL, 'nkf nkf', 'unnamed road', 'Kuril', 'Dhaka', 23.82147300, 90.42195360, NULL, 'nfk@nj.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(35, NULL, 'nkf nkf', 'unnamed road', 'Kuril', 'Dhaka', 23.82147300, 90.42195360, NULL, 'nfek@nj.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(36, NULL, 'ed ed', 'unnamed road', 'Kuril', 'Dhaka', 23.82147300, 90.42195360, NULL, 'ed@mm.vc', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(37, NULL, 'cd dc', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'cd@dn.co', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(38, NULL, 'cd dc', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'cd@d.co', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(39, NULL, 'John Dopoe', NULL, NULL, NULL, NULL, NULL, NULL, 'a@ijk.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(40, NULL, 'cd dc', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'c66d@d.co', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(41, '12321235533', 'jhs bnxn', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'ss@jhdu.cn', 'Army', 'Male', 8, NULL, 'swim', NULL, NULL, NULL, 'Updated notes for rescuer.'),
+(42, NULL, 'Sabbir Hossain', 'unnamed road', 'Kuril', 'Dhaka', 23.82144820, 90.42254280, NULL, 'sh@sh.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(43, NULL, 'dd dd', 'Road No. 6', 'Kuril', 'Dhaka', 23.82561280, 90.42984960, NULL, 'dd@dd.cc', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(44, NULL, 'harry potter', 'unnamed road', 'Paltan', 'Dhaka', 23.73386240, 90.41346560, NULL, 'h@p.com', NULL, NULL, 24, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -437,7 +446,15 @@ INSERT INTO `victim` (`victim_id`, `NID`, `name`, `address_area`, `address_upazi
 (69, '2001567890123', 'Lamia Sultana', 'Pabna Sadar', 'Pabna Sadar', 'Pabna', 23.65356800, 89.63336800, '01733330006', 'lamia.sultana@example.com', 'Female', 36, 5, 'Critical', 'High', 'In Progress', '2024-10-12 18:30:00', 'Medical Assistance'),
 (70, '1997890123456', 'Hafizur Rahman', 'Brahmanbaria Sadar', 'Brahmanbaria Sadar', 'Brahmanbaria', 23.95340000, 91.05705900, '01722220007', 'hafizur.rahman@example.com', 'Male', 40, 4, 'Injured', 'High', 'In Progress', '2024-10-12 19:00:00', 'Food, Shelter'),
 (71, '1987654321098', 'Nilufa Khatun', 'Patuakhali Sadar', 'Patuakhali Sadar', 'Patuakhali', 22.34891100, 90.33608000, '01711110008', 'nilufa.khatun@example.com', 'Female', 50, 3, 'Healthy', 'Medium', 'Completed', '2024-10-12 20:00:00', 'None'),
-(72, '2000987654321', 'Ahsanul Haque', 'Comilla Sadar', 'Comilla Sadar', 'Comilla', 23.45990500, 91.17636100, '01700000009', 'ahsanul.haque@example.com', 'Male', 33, 2, 'Critical', 'High', 'In Progress', '2024-10-12 21:30:00', 'Medical Assistance, Food');
+(72, '2000987654321', 'Ahsanul Haque', 'Comilla Sadar', 'Comilla Sadar', 'Comilla', 23.45990500, 91.17636100, '01700000009', 'ahsanul.haque@example.com', 'Male', 33, 2, 'Critical', 'High', 'In Progress', '2024-10-12 21:30:00', 'Medical Assistance, Food'),
+(80, '121212153243113', 'Joh Doe', 'Area 51', 'Upazila ABC', 'District XYZ', 23.12345678, 90.12345678, '01712345998', 'johndoe@example.com', 'Male', 35, 4, 'Good', 'Low', 'Pending', NULL, NULL),
+(81, NULL, 'ihb shhs', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'ss@jdu.cn', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(82, NULL, 'as xd', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'qaq@as.coo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(83, NULL, 'kjn kd', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'jn@jn.cd', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(84, NULL, 'jhs bnxn', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, NULL, 'nb@kjxs.ci', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(85, '12321235533', 'jhs bnxn', 'unnamed road', 'Joar Sahara', 'Dhaka', 23.82220620, 90.41724020, '1231', 'nb@kjffxs.ci', NULL, 56, NULL, NULL, NULL, NULL, NULL, NULL),
+(86, '13', 'cheng chung', 'unnamed road', 'Kuril', 'Dhaka', 23.82220310, 90.41841850, '123908975', 'cg@sd.vc', 'Male', 23, 7, 'Healthy', 'Low', 'Pending', NULL, 'Yes'),
+(87, '1212', 'Misbah Khan', 'unnamed road', 'Kuril', 'Dhaka', 23.82144820, 90.42254280, '012', 'mk@mk.com', 'Male', 18, 7, 'Healthy', 'High', NULL, NULL, 'Food');
 
 -- --------------------------------------------------------
 
@@ -602,7 +619,7 @@ ALTER TABLE `weatherforecast`
 -- AUTO_INCREMENT for table `deadBodies`
 --
 ALTER TABLE `deadBodies`
-  MODIFY `body_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `body_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `donations`
@@ -644,13 +661,13 @@ ALTER TABLE `mobiletowers`
 -- AUTO_INCREMENT for table `rescueassignments`
 --
 ALTER TABLE `rescueassignments`
-  MODIFY `assignment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `assignment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `rescuer`
 --
 ALTER TABLE `rescuer`
-  MODIFY `rescuer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `rescuer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `shelters`
@@ -662,7 +679,7 @@ ALTER TABLE `shelters`
 -- AUTO_INCREMENT for table `victim`
 --
 ALTER TABLE `victim`
-  MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `victim_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT for table `waterlevels`
